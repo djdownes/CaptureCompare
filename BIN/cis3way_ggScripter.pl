@@ -17,7 +17,7 @@ use Getopt::Long;
 &GetOptions
 (
     "viewpoints=s"=>\ my $viewPoints,     # --viewpoints      VIEWPOINT	CHR VP_START VP_STOP EXCLSTART EXCLSTOP REGIONSTART REGIONSTOP BINSIZE WINDOWSIZE
-	"genome=s"=> \ my $genome,	    	  # --genome		  mm9/hg19/mm10
+	"annotation=s"=> \ my $annotation,    # --annotation 	  Full path to Bed file with genes or other features.
 );
 
 my $current_directory = cwd;
@@ -104,7 +104,7 @@ while (my $viewpoint = <VIEWPOINTS>)
 			#		- Could hard code in HbaCombined and HbbCombined for exclusion of both windows.
 		
 		print OUTFH "# Load Data for Gene intersect =================================================\n";
-		print OUTFH "genes.file <- \"/t1-data/user/hugheslab/rschwess/database/gene_annotations/RefSeqGenes_$genome.bed\"\n";
+		print OUTFH "genes.file <- \"$annotation\"\n";
 		print OUTFH "known.genes <- read.table(genes.file)\n";
 
 		print OUTFH "# Intersect Genes with plot frame ==============================================\n";

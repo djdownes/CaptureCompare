@@ -43,9 +43,7 @@ use Try::Tiny;
 
 # Run Commands:
 
-# Run with following options:       perl ./cis_normaliser.pl -path </full/path/to/CC4/output/> -dir test1,test2,test3,cont1,cont2,cont3 -oligo <oligo.file> -name <NAME>
-
-# Example of a run command:         nohup perl cis_normaliser.pl -dir /t1-data1/WTSA_Dev/ddownes/Script_Testing/cis_normalisation/data -oligo oligos.txt -name run &
+# Run with following options:       perl ./cis_normaliser.pl -path </full/path/to/CC4/output/> -dir test1,test2,test3,cont1,cont2,cont3 -viewpoints <oligo.file> -name <NAME> -version <CC_version>
  
  
 &GetOptions
@@ -81,24 +79,26 @@ foreach my $name (@dirs)            #### Works through the array one at a time a
     my $cis_summary_out = "$output_path\/$name\_cisReport.txt";
     open(VIEW_P, $vp_file) or die "Can't open $vp_file file";
     open (OUT_SUMMARY, ">$cis_summary_out") or die "can't open output file $cis_summary_out";
-    print OUT_SUMMARY "Oligo\tCis\tTrans\tPercent_Cis\n";
+    print OUT_SUMMARY "Oligo\tCis\tTrans\tTotal\tPercent_Cis\n";
     
     while (my $target = <VIEW_P>)
         { 
         chomp $target;
-        my ($viewID, $cis_chr, $vp_start, $vp_stop, @rest) = split(/\t/, $target);
+        my ($viewID, $cis_chr, $vp_start, $vp_stop, @rest) = split(' ', $target);
         my $gff =  "$path/$name/F6_greenGraphs_combined_$name\_$version\/COMBINED_$version\_$viewID.gff";                  ## Will go to shit if folder path isn't exact!                                                         
         open (FH, $gff) or die "can't open $viewID gff file ";                                                             ## Change or die to go to next oligo somehow?
-
-        #### Calculating number of cis interactions
+        my $raw_out = "$output_path\/$name\_$viewID\_raw.bdg";               
+        open(RAW, ">$raw_out") or die "Can't open $raw_out file";
+        #### Calculating number of cis interactions, printing ALL raw counts to a bedgraph
                                                                                            
         my $cis_counter = 0;
         my $trans_counter = 0;
         while (my $line = <FH>)
                 {
                 chomp $line;
-                my ($chr_test, $CC, $VP, $start2, $stop2, $value, $plus, $zero, $dot) = split(/\t/, $line);      
-                if ($chr_test eq $cis_chr)         #### Would need to add value in here for window to Mb region -- Could do with "if" comparing to co-ord ±frag start/stop. Add optional flag.
+                my ($chr_test, $CC, $VP, $start2, $stop2, $value, $plus, $zero, $dot) = split(' ', $line);      
+                print RAW "$chr_test\t$start2\t$stop2\t$value\n";               
+                if ($chr_test eq $cis_chr)         #### Would need to add value in here for window to Mb region -- Could do with "if" comparing to co-ord ±frag start/stop. Add optional flag?
                         {
                         $cis_counter = $cis_counter + $value;
                         }
@@ -108,14 +108,15 @@ foreach my $name (@dirs)            #### Works through the array one at a time a
                         }
                 }
         my $fraction = sprintf("%.5f", ($cis_counter/($cis_counter+$trans_counter)));
-        print OUT_SUMMARY "$viewID\t$cis_counter\t$trans_counter\t$fraction\n";
+        my $total = ($cis_counter+$trans_counter);
+        print OUT_SUMMARY "$viewID\t$cis_counter\t$trans_counter\t$total\t$fraction\n";
         close FH;  
         $fraction = 0;
     
-        #### Generating a normalised bdg of interactions per 100,000 unique cis interactions
+        #### Generating a normalised bdg of interactions per 100,000 unique cis interactions     Could potentially add super optional flag for different normalisation factor?
         
         my $cis_norm_out = "$output_path\/$name\_$viewID\_cis_normalised.bdg";               
-        my $cis_denominator = $cis_counter / 100000;                                ## Will go to shit if cis = 0
+        my $cis_denominator = $cis_counter / 100000;                                ## Will go to hell if cis = 0, could put in check here with flag warning?
 
         open(CISNORM, ">$cis_norm_out") or die "Can't open $cis_norm_out file";
         
@@ -124,8 +125,8 @@ foreach my $name (@dirs)            #### Works through the array one at a time a
         while (my $second_line = <FH2>)
                 {
                 chomp $second_line;
-                my ($chr_test, $CC, $VP, $start2, $stop2, $value, $plus, $zero, $dot) = split(/\t/, $second_line);  
-                if ($chr_test eq $cis_chr) ### Only prints reporters in cis - If adding Mb window, filter all counts outside region.
+                my ($chr_test, $CC, $VP, $start2, $stop2, $value, $plus, $zero, $dot) = split(' ', $second_line);  
+                if ($chr_test eq $cis_chr) ### Only prints reporters in cis - If adding Mb window, filter all counts outside region.   If we wanted to output trans could add flag option to generate that file.
                     {                      
                         my $norm_cis_value = $value / $cis_denominator;
                         print CISNORM "$chr_test\t$start2\t$stop2\t$norm_cis_value\n";
