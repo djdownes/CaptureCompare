@@ -4,18 +4,20 @@ use Pod::Usage;
 use Data::Dumper;
 use Getopt::Long;
 
-# This script is for bining and windowing capture C data. Requires normalised unionised files for a single viewpoint from
-# 2 different samples/tissues. Single imput parameter file containing exclusion regions, visualisation region, and bin/window sizes.
+# This script is for bining and windowing CaptureC data. Requires normalised unionised files for a single viewpoint from
+# 2-3 different samples/tissues. Single imput parameter file containing exclusion regions, visualisation region, and bin/window sizes.
 # Output is a file of parameters for each viewpoint, and tab delimited multibedgraph of bins and windows
 
 # Script adapted from Lar's manual scripts to be applicapble to multiple loci and more user friendly.
 ### (C) Damien Downes 16th May 2018.
 
+# Script has specification for the HbaCombined (Hba-1,Hba-2), and HbbCombined (Hbb-b1,Hbb-b2) viewpoints - all three viewpoints for each gene must be included.
+
 
 &GetOptions
 (
     "viewpoints=s"=>\ my $viewPoints,     # -viewpoints      VIEWPOINT	CHR VP_START VP_STOP EXCLSTART EXCLSTOP REGIONSTART REGIONSTOP BINSIZE WINDOWSIZE
-	"samples=s"=> \ my $samples,		  # -samples		  Sample1,Sample2,Sample3
+	"samples=s"=> \ my $samples,	  # -samples		  Sample1,Sample2,Sample3
 );
 
 
@@ -51,7 +53,7 @@ while (my $viewpoint = <VIEWPOINTS>)
 		$ExclusionHash{$Exclu_counter}{"Excl_View_ID"} = $viewID;
 		$ExclusionHash{$Exclu_counter}{"Excl_VP_Start"} = $vp_start;
 		$ExclusionHash{$Exclu_counter}{"Excl_VP_Stop"} = $vp_stop;
-		### Store values for HbaCombined and HbbCombined bin exclusion			- This needs fixing for HbaCombined VP files (DD13/11/18), need to hardcode in values for when HbaCombined is run without Hba-1, Hba-2?
+		### Store values for HbaCombined and HbbCombined bin exclusion
 		if ($viewID =~ /Hba-1/)
 			{
 				$hba1_ex_start = $excl_start;

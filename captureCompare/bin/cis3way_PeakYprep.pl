@@ -15,6 +15,7 @@ use Getopt::Long;
 	"samples=s"=> \ my $samples,		  # --samples		  Sample1,Sample2,Sample3
     "name=s"=> \my $run_name,             # --name             Name of the analysis
     "genome=s"=> \ my $genome,	    	  # --genome		  mm9/hg19
+    "REfragments=s"=> \ my $frag_bed,	  # --REfragments	  /path/to/RE/fragment/coordinate/bed/file/eg/mm9_DpnII_Fragments.txt       # List of all RE fragments for genome as chr:start-stop, non-overlapping
 );
 
 my ($sampleA, $sampleB, $sampleC) = split /\,/, $samples;
@@ -25,7 +26,6 @@ my ($sampleA, $sampleB, $sampleC) = split /\,/, $samples;
 #chr1   10          200         1
 #chr1   251         380         2
 
-my $frag_bed = "/t1-data/user/hugheslab/ddownes/Scripts/gitHubScripts/CaptureCompare/Testing_180618/$genome\_DpnII_Fragments.txt";         # List of all DpnII fragments for genome as chr:start-stop, non-overlapping
 open(FRAGIN, "$frag_bed") or die "Can't open $frag_bed";
 
 my $frag_key_out = "$genome\_DpnII_Fragments_key.bed";

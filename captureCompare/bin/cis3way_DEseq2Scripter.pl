@@ -47,7 +47,7 @@ while (my $viewpoint = <VIEWPOINTS>)
 		my ($viewID, @rest) = split(' ', $viewpoint);
 
 #### Print R script - this bit needs work.
-        
+	
         open (OUTFH, ">$viewID\_DESeq2.R") or die "Cannot open file $viewID\_DESeq2.R\n\n";
 		print OUTFH "# Set Working Directory and Load Libraries=====================================\n";		
         print OUTFH "setwd(\"$current_directory\")\n\n";		

@@ -81,8 +81,8 @@ while (my $viewpoint = <VIEWPOINTS>)
 		print OUTFH "parameters.file <- \"$viewPoints\"\n";
 		print OUTFH "id <- \"$viewID\"\n\n";	
 		
-		print OUTFH "data <- as.tibble(read.table(data.file, header=T))\n";
-		print OUTFH "parameters <- as.tibble(read.table(parameters.file))\n";
+		print OUTFH "data <- as_tibble(read.table(data.file, header=T))\n";
+		print OUTFH "parameters <- as_tibble(read.table(parameters.file))\n";
 		print OUTFH "names(parameters) <- c(\"Viewpoint\", \"Chr\", \"Frag_start\", \"Frag_stop\", \"Exclusion_Start\", \"Exclusion_Stop\", \"Plot_Region_Start\", \"Plot_Region_Stop\", \"Bin_Size\", \"Window_size\")\n\n";
 		
 
@@ -108,7 +108,7 @@ while (my $viewpoint = <VIEWPOINTS>)
 		print OUTFH "known.genes <- read.table(genes.file)\n";
 
 		print OUTFH "# Intersect Genes with plot frame ==============================================\n";
-		print OUTFH "genes <- as.tibble(IntersectBedDataframe(known.genes, chr=as.character(viewp\$Chr), start=viewp\$Plot_Region_Start, end=viewp\$Plot_Region_Stop))\n";
+		print OUTFH "genes <- as_tibble(IntersectBedDataframe(known.genes, chr=as.character(viewp\$Chr), start=viewp\$Plot_Region_Start, end=viewp\$Plot_Region_Stop))\n";
 		print OUTFH "names(genes) <- c(\"chr\", \"start\", \"end\", \"name\")\n";
 		print OUTFH "# some formating for plotting\n";
 		print OUTFH "genes <- genes %>% \n";

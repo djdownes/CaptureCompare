@@ -5,7 +5,7 @@ use Data::Dumper;
 use Getopt::Long;
 use Try::Tiny;
 
-### This is a sub script for CC4 triplicate analysis which generates union bedgraphs for all oligos from 3 test and 3 control samples
+### This is a sub script for CCseqBasic triplicate analysis which generates union bedgraphs for all oligos from 3 test and 3 control samples
 
 ### (C) Damien Downes 16th May 2018.
 
@@ -18,7 +18,7 @@ use Try::Tiny;
                                         #               you’ve entered (it will be two directories down)
     "viewpoints=s" => \my $vp_file,     # -viewpoints   VIEWPOINT	CHR VP_START VP_STOP EXCLSTART EXCLSTOP REGIONSTART REGIONSTOP BINSIZE WINDOWSIZE
                                         #               Note: chr is numeric  (1 NOT chr1)
-    "samples=s"=> \ my $samples,		# -samples		Sample1,Sample2,Sample3
+    "samples=s"=> \ my $samples,	# -samples	Sample1,Sample2,Sample3
 );
 
 
@@ -43,6 +43,21 @@ if (length($sampleC) != 0)
     ($s1_r1,$s1_r2,$s1_r3,$s2_r1,$s2_r2,$s2_r3,$s3_r1,$s3_r2,$s3_r3) = split(/,/,join(',',@dirs));
     }
 
+my $sample_file = "Sample_order.txt";
+
+
+
+open(LIST, ">$sample_file") or die "Can't open $sample_file file";
+print LIST "Sample_1:\t$sampleA\n";
+print LIST "Sample_1_reps:\t$s1_r1\t$s1_r2\t$s1_r3\n";
+print LIST "Sample_2:\t$sampleB\n";
+print LIST "Sample_2_reps:\t$s2_r1\t$s2_r2\t$s2_r3\n";
+if (length($sampleC) != 0)
+    {
+    print LIST "Sample_3:\t$sampleC\n";
+    print LIST "Sample_3_reps:\t$s3_r1\t$s3_r2\t$s3_r3\n";
+    }
+    
 my $bedtools_command = "bedtools_commands_TEMP.txt";
 open(BED, ">$bedtools_command") or die "Can't open $bedtools_command file";
 open(VP, $vp_file) or die "Can't open $vp_file file";
