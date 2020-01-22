@@ -8,7 +8,7 @@ The wrapper script enables the comparison of triplicates for two or three sample
 
 CaptureCompare can be run locally or on a queued server.
          
-# Requirements for input files
+## Requirements for input files
          
 1. Input directories from CCsaeqBasic to be in this following structure:
 
@@ -20,60 +20,60 @@ CaptureCompare can be run locally or on a queued server.
                 `--F6_greenGraphs_combined_Test_B_CCversion
                    `COMBINED_CCversion_VIEWPOINT.gff      
   
-         Run name must match exactly the directory name it was run in (e.g "Test_A" above)
+         Run name must match exactly the directory name it was run in (e.g. "Test_A" above)
   
 2. A parameters file sepcifrying viewpoint name, starts and stops of viewpoint, exclusion and plotting regions, bin size, and window size
 
 3.  A run shell specificying the input options. For example see "compare.sh"
 
-# Input Options
+## Input Options
 
-       path: Directory containing 6/9 run files with structure described above.
-       samples1,2,3: Name of samples, in same order as directories for samples.
-       directories: List of 3 replicates for each sample in the correct sample order.
-       name: Name for the analysis run: e.g. "Promoter"
-       genome: Genome: hg19, mm9, or mm10
-       version: CCanalyzer version (Any with F6_greenGraphs_combined_Test_A_CC4 format)
-       parameters: Path to file containing windowing parameters - Viewpoint    Chr Frag_start  Frag_stop Exlusion_Start Exlusion_Stop Plot_Region_Start Plot_Region_Stop Bin_Size Window_size
+- **path:** Directory containing 6/9 run files with structure described above.
+- **samples1,2,3:** Name of samples, in same order as directories for samples.
+- **directories:** List of 3 replicates for each sample in the correct sample order.
+- **name:** Name for the analysis run: e.g. "Promoter"
+- **genome:** Genome: hg19, mm9, or mm10
+- **version:** CCanalyzer version (Any with F6_greenGraphs_combined_Test_A_CC4 format)
+- **parameters:** Path to file containing windowing parameters - Viewpoint    Chr Frag_start  Frag_stop Exlusion_Start Exlusion_Stop Plot_Region_Start Plot_Region_Stop Bin_Size Window_size
 
-# Outputs
+## Outputs
 
 Out files will be organised in the following structure:
 
--── Compendium_cis_analysis
-    ├── 1_reports
-    ├── 2_unionBedgraphs
-    │   ├── A_raw_counts
-    │   └── B_normalised_counts
-    ├── 3_tracks
-    │   ├── A_replicates_raw
-    │   ├── B_replicates_normalised
-    │   ├── C_means
-    │   ├── D_subtractions
-    │   └── E_pvalues
-    ├── 4_plotting
-    │   ├── A_parameters
-    │   ├── B_binned
-    │   ├── C_windowed
-    │   ├── D_Rscripts
-    │   └── E_pdfs
-    ├── 5_DESeq2
-    │   ├── A_Rscripts
-    │   ├── B_columnfile
-    │   ├── C_inputMatricies
-    │   └── D_raw_output
-    └── 6_PeakyInputs
+         |--Compendium_cis_analysis
+             ├── 1_reports
+             ├── 2_unionBedgraphs
+             │   ├── A_raw_counts
+             │   └── B_normalised_counts
+             ├── 3_tracks
+             │   ├── A_replicates_raw
+             │   ├── B_replicates_normalised
+             │   ├── C_means
+             │   ├── D_subtractions
+             │   └── E_pvalues
+             ├── 4_plotting
+             │   ├── A_parameters
+             │   ├── B_binned
+             │   ├── C_windowed
+             │   ├── D_Rscripts
+             │   └── E_pdfs
+             ├── 5_DESeq2
+             │   ├── A_Rscripts
+             │   ├── B_columnfile
+             │   ├── C_inputMatricies
+             │   └── D_raw_output
+             └── 6_PeakyInputs
 
-         1 - Reports for each sample with cis and trans interaction counts at each viewpoint
-         2 - Union bedgraphs of raw and normalised read counds per fragment for all viewpoints 
-         3 - Bigwigs for all viewpoints in each replicate, as well as the means for a sample     
-         4 - Pdf of windowed viewpoints, and input files, and plotting scripts to facilitate easy re-analysis
-         5 - DESe2 input and output files as well as R scripts for easy re-analysis
-         6 - Formatted files for peak calling using peakY
+1. Reports for each sample with cis and trans interaction counts at each viewpoint
+2. Union bedgraphs of raw and normalised read counds per fragment for all viewpoints 
+3. Bigwigs for all viewpoints in each replicate, as well as the means for a sample     
+4. Pdf of windowed viewpoints, and input files, and plotting scripts to facilitate easy re-analysis
+5. DESe2 input and output files as well as R scripts for easy re-analysis
+6. Formatted files for peak calling using peakY
          
  CaptureCompare also generates a public hub for loading into UCSC or CaptureSee
 
-# Software Requirements
+## Software Requirements
          - Perl
          - bedtools (v2.25.0)
          - ucsctools (v1.0)
