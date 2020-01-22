@@ -10,7 +10,7 @@ CaptureCompare can be run locally or on a queued server.
          
 ## Requirements for input files
          
-1. Input directories from CCsaeqBasic to be in this following structure:
+1. Input directories from [CCseqBasic](https://github.com/Hughes-Genome-Group/CCseqBasicS) to be in this following structure:
 
          |--Directory
              |--Test_A
