@@ -4,7 +4,7 @@
 
 These package of scripts perform analysis on a Capture-C replicates forming an experiment. 
 
-The wrapper script enables the comparison of triplicates for two or three samples (cell types, growth conditions, timepoints, genetic models). Analysis includes library quality reporting, normalisation, mean and stdev calculation, sample comparison, DESeq2 analysis, windowing and plotting, data preparation for peak calling with [peakY](https://github.com/cqgd/pky), and file preparation for data exploration with [CaptureSee](https://capturesee.molbiol.ox.ac.uk/).
+The wrapper script enables the comparison of triplicates for two or three samples (cell types, growth conditions, timepoints, genetic models). Analysis includes library quality reporting, normalisation, mean and stdev calculation, sample comparison, DESeq2 analysis, windowing and plotting, data preparation for peak calling with [peaky](https://github.com/cqgd/pky), and file preparation for data exploration with [CaptureSee](https://capturesee.molbiol.ox.ac.uk/).
 
 CaptureCompare can be run locally or on a queued server.
          
@@ -69,7 +69,7 @@ Out files will be organised in the following structure:
 3. Bigwigs for all viewpoints in each replicate, as well as the means for a sample     
 4. Pdf of windowed viewpoints, and input files, and plotting scripts to facilitate easy re-analysis
 5. DESe2 input and output files as well as R scripts for easy re-analysis
-6. Formatted files for peak calling using peakY
+6. Formatted files for peak calling using peaky
          
  CaptureCompare also generates a public hub for loading into UCSC or CaptureSee
 
