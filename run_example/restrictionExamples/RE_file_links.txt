@@ -1,0 +1,7 @@
+Fragment annotations:
+
+http://sara.molbiol.ox.ac.uk/public/hugheslab/CaptureCompendium/restFrag_examples/dm3_DpnII_Fragments.txt
+http://sara.molbiol.ox.ac.uk/public/hugheslab/CaptureCompendium/restFrag_examples/hg18_DpnII_Fragments.txt
+http://sara.molbiol.ox.ac.uk/public/hugheslab/CaptureCompendium/restFrag_examples/hg19_DpnII_Fragments.txt
+http://sara.molbiol.ox.ac.uk/public/hugheslab/CaptureCompendium/restFrag_examples/mm10_DpnII_Fragments.txt
+http://sara.molbiol.ox.ac.uk/public/hugheslab/CaptureCompendium/restFrag_examples/mm9_DpnII_Fragments.txt

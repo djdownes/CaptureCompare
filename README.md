@@ -2,61 +2,84 @@
 
 (C) Damien J Downes 14 May 2018: damien.downes@ndcls.ox.ac.uk
 
-These scripts perform post processing of all gff files listed in an viewpoint file set of samples and controls from CC analysis software.
+These package of scripts perform analysis on a Capture-C replicates forming an experiment. 
 
-The appropriate shell script for the design (2 or 3 cell types) will call the normalisation, union bedgraph and plotting scripts. Normalisation is per 100,000 unique cis reads.
+The wrapper script enables the comparison of triplicates for two or three samples (cell types, growth conditions, timepoints, genetic models). Analysis includes library quality reporting, normalisation, mean and stdev calculation, sample comparison, DESeq2 analysis, windowing and plotting, data preparation for peak calling with [peaky](https://github.com/cqgd/pky), and file preparation for data exploration with [CaptureSee](https://capturesee.molbiol.ox.ac.uk/).
 
-###
-Requirements
-###
+CaptureCompare can be run locally or on a queued server.
+         
+## Requirements for input files
+         
+1. Input directories from [CCseqBasic](https://github.com/Hughes-Genome-Group/CCseqBasicS) to be in this following structure:
 
-1. Input options as described below added to the shell script lines 21-37
-
-2. Output folder will be a subdirectory of the folder that the script is in run in
-
-3. Input directories to be in this following structure: - Run name must match the directory name it was run in (e.g "Test_A")
          |--Directory
              |--Test_A
-             |  `--F6_greenGraphs_combined_Test_A_version
-             |     `COMBINED_version_VIEWPOINT.gff
+             |  `--F6_greenGraphs_combined_Test_A_CCversion
+             |     `COMBINED_CCversion_VIEWPOINT.gff
              `--Test_B
-                `--F6_greenGraphs_combined_Test_B_version
-                   `COMBINED_version_VIEWPOINT.gff      
+                `--F6_greenGraphs_combined_Test_B_CCversion
+                   `COMBINED_CCversion_VIEWPOINT.gff      
   
-4. Windowing parameters file with viewpoint name, start and stop of viewpoint, exclusion and plotting regions, as well as the bin and window size (default 250,5000)
+         Run name must match exactly the directory name it was run in (e.g. "Test_A" above)
+  
+2. A parameters file sepcifrying viewpoint name, starts and stops of viewpoint, exclusion and plotting regions, bin size, and window size
 
-5. perl
+3.  A run shell specificying the input options. For example see "compare.sh"
 
-6. bedtools v2.25.0
+## Input Options
 
-7. ucsctools v1.0
-    - sub requirement: UCSC chromosome sizes - provided in "annotations"
+- **path:** Directory containing 6/9 run files with structure described above.
+- **samples1,2,3:** Name of samples, in same order as directories for samples.
+- **directories:** List of 3 replicates for each sample in the correct sample order.
+- **name:** Name for the analysis run: e.g. "Promoter"
+- **genome:** Genome: hg19, mm9, or mm10
+- **version:** CCanalyzer version (Any with F6_greenGraphs_combined_Test_A_CC4 format)
+- **parameters:** Path to file containing windowing parameters - Viewpoint    Chr Frag_start  Frag_stop Exlusion_Start Exlusion_Stop Plot_Region_Start Plot_Region_Stop Bin_Size Window_size
 
-8. R v3.4.1-newgcc
+## Outputs
+
+Out files will be organised in the following structure:
+
+         |--Compendium_cis_analysis
+             ├── 1_reports
+             ├── 2_unionBedgraphs
+             │   ├── A_raw_counts
+             │   └── B_normalised_counts
+             ├── 3_tracks
+             │   ├── A_replicates_raw
+             │   ├── B_replicates_normalised
+             │   ├── C_means
+             │   ├── D_subtractions
+             │   └── E_pvalues
+             ├── 4_plotting
+             │   ├── A_parameters
+             │   ├── B_binned
+             │   ├── C_windowed
+             │   ├── D_Rscripts
+             │   └── E_pdfs
+             ├── 5_DESeq2
+             │   ├── A_Rscripts
+             │   ├── B_columnfile
+             │   ├── C_inputMatricies
+             │   └── D_raw_output
+             └── 6_PeakyInputs
+
+1. Reports for each sample with cis and trans interaction counts at each viewpoint
+2. Union bedgraphs of raw and normalised read counds per fragment for all viewpoints 
+3. Bigwigs for all viewpoints in each replicate, as well as the means for a sample     
+4. Pdf of windowed viewpoints, and input files, and plotting scripts to facilitate easy re-analysis
+5. DESe2 input and output files as well as R scripts for easy re-analysis
+6. Formatted files for peak calling using peaky
+         
+ CaptureCompare also generates a public hub for loading into UCSC or CaptureSee
+
+## Software Requirements
+         - Perl
+         - bedtools (v2.25.0)
+         - ucsctools (v1.0)
+                  - Example chromosome sizes provided in annotations
+         - DEseq2 (running in R3.2)
+         - 
+         
 
 
-###     
-Input Options
-###
-
-#       path            		=   Directory containing 6/9 run files with structure described above.
-#       samples1,2,3    	=   Name of samples, in same order as directories for samples.
-#       directories     		=   List of 3 replicates for each sample in the correct sample order.
-#       name            		=   Name for the analysis run: e.g. "Promoter"
-#       genome          		=   Genome: hg19, mm9, or mm10
-#       version         		=   CCanalyzer version (Any with F6_greenGraphs_combined_Test_A_CC4 format)
-#       parameters      		=   Path to file containing windowing parameters - Viewpoint    Chr Frag_start  Frag_stop Exlusion_Start Exlusion_Stop Plot_Region_Start Plot_Region_Stop Bin_Size Window_size
-
-
-###
-The output of this script is:
-###
-
-1 - Reports for each sample with cis and trans interaction counts at each viewpoint
-2 - Normalised bigwigs for all viewpoints in each replicate
-3 - Union bedgraphs of normalised read counds per fragment for all viewpoints
-4 - Bigwigs of the normalised mean for three replicates
-5 - Bigwigs of the subtracted mean for comparison samples
-6 - Bin and windowed bin files for each viewpoint
-7 - R scripts used to generate plots
-8 - Pdf of windowed tracks in a given region with annotated genes

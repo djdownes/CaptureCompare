@@ -17,7 +17,7 @@ use Getopt::Long;
 &GetOptions
 (
     "viewpoints=s"=>\ my $viewPoints,     # --viewpoints      VIEWPOINT	CHR VP_START VP_STOP EXCLSTART EXCLSTOP REGIONSTART REGIONSTOP BINSIZE WINDOWSIZE
-	"genome=s"=> \ my $genome,	    	  # --genome		  mm9/hg19/mm10
+	"annotation=s"=> \ my $annotation,    # --annotation 	  Full path to Bed file with genes or other features.
 );
 
 my $current_directory = cwd;
@@ -81,8 +81,8 @@ while (my $viewpoint = <VIEWPOINTS>)
 		print OUTFH "parameters.file <- \"$viewPoints\"\n";
 		print OUTFH "id <- \"$viewID\"\n\n";	
 		
-		print OUTFH "data <- as.tibble(read.table(data.file, header=T))\n";
-		print OUTFH "parameters <- as.tibble(read.table(parameters.file))\n";
+		print OUTFH "data <- as_tibble(read.table(data.file, header=T))\n";
+		print OUTFH "parameters <- as_tibble(read.table(parameters.file))\n";
 		print OUTFH "names(parameters) <- c(\"Viewpoint\", \"Chr\", \"Frag_start\", \"Frag_stop\", \"Exclusion_Start\", \"Exclusion_Stop\", \"Plot_Region_Start\", \"Plot_Region_Stop\", \"Bin_Size\", \"Window_size\")\n\n";
 		
 
@@ -104,11 +104,11 @@ while (my $viewpoint = <VIEWPOINTS>)
 			#		- Could hard code in HbaCombined and HbbCombined for exclusion of both windows.
 		
 		print OUTFH "# Load Data for Gene intersect =================================================\n";
-		print OUTFH "genes.file <- \"/t1-data/user/hugheslab/rschwess/database/gene_annotations/RefSeqGenes_$genome.bed\"\n";
+		print OUTFH "genes.file <- \"$annotation\"\n";
 		print OUTFH "known.genes <- read.table(genes.file)\n";
 
 		print OUTFH "# Intersect Genes with plot frame ==============================================\n";
-		print OUTFH "genes <- as.tibble(IntersectBedDataframe(known.genes, chr=as.character(viewp\$Chr), start=viewp\$Plot_Region_Start, end=viewp\$Plot_Region_Stop))\n";
+		print OUTFH "genes <- as_tibble(IntersectBedDataframe(known.genes, chr=as.character(viewp\$Chr), start=viewp\$Plot_Region_Start, end=viewp\$Plot_Region_Stop))\n";
 		print OUTFH "names(genes) <- c(\"chr\", \"start\", \"end\", \"name\")\n";
 		print OUTFH "# some formating for plotting\n";
 		print OUTFH "genes <- genes %>% \n";

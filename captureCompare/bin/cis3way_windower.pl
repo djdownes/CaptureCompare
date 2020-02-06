@@ -4,18 +4,20 @@ use Pod::Usage;
 use Data::Dumper;
 use Getopt::Long;
 
-# This script is for bining and windowing capture C data. Requires normalised unionised files for a single viewpoint from
-# 2 different samples/tissues. Single imput parameter file containing exclusion regions, visualisation region, and bin/window sizes.
+# This script is for bining and windowing CaptureC data. Requires normalised unionised files for a single viewpoint from
+# 2-3 different samples/tissues. Single imput parameter file containing exclusion regions, visualisation region, and bin/window sizes.
 # Output is a file of parameters for each viewpoint, and tab delimited multibedgraph of bins and windows
 
 # Script adapted from Lar's manual scripts to be applicapble to multiple loci and more user friendly.
 ### (C) Damien Downes 16th May 2018.
 
+# Script has specification for the HbaCombined (Hba-1,Hba-2), and HbbCombined (Hbb-b1,Hbb-b2) viewpoints - all three viewpoints for each gene must be included.
+
 
 &GetOptions
 (
-    "viewpoints=s"=>\ my $viewPoints,     # -viewpoints       VIEWPOINT	CHR VP_START VP_STOP EXCLSTART EXCLSTOP REGIONSTART REGIONSTOP BINSIZE WINDOWSIZE
-	"samples=s"=> \ my $samples,		  # --samples		  Sample1,Sample2,Sample3
+    "viewpoints=s"=>\ my $viewPoints,     # -viewpoints      VIEWPOINT	CHR VP_START VP_STOP EXCLSTART EXCLSTOP REGIONSTART REGIONSTOP BINSIZE WINDOWSIZE
+	"samples=s"=> \ my $samples,	  # -samples		  Sample1,Sample2,Sample3
 );
 
 
@@ -96,9 +98,18 @@ while (my $viewpoint = <VIEWPOINTS>)
 		unless (open(OUTFH2, ">$output_window")){die "Cannot open file $output_window $!\n"; exit};
 		
 		unless (open(PARAMETERS, ">$parameters")){die "Cannot open file $parameters $!\n"; exit};
-		print  OUTFH "BinNum\tChr\tStart\tStop\t$sampleA\_rep1\t$sampleA\_rep2\t$sampleA\_rep3\t$sampleB\_rep1\t$sampleB\_rep2\t$sampleB\_rep3\t$sampleC\_rep1\t$sampleC\_rep2\t$sampleC\_rep3\n";
+		
+		if (length($sampleC) != 0)	
+		{
+		print  OUTFH  "BinNum\tChr\tStart\tStop\t$sampleA\_rep1\t$sampleA\_rep2\t$sampleA\_rep3\t$sampleB\_rep1\t$sampleB\_rep2\t$sampleB\_rep3\t$sampleC\_rep1\t$sampleC\_rep2\t$sampleC\_rep3\n";
 		print  OUTFH2 "BinNum\tChr\tStart\tStop\t$sampleA\_rep1\t$sampleA\_rep2\t$sampleA\_rep3\t$sampleB\_rep1\t$sampleB\_rep2\t$sampleB\_rep3\t$sampleC\_rep1\t$sampleC\_rep2\t$sampleC\_rep3\n";
-	
+		}
+		
+		if (length($sampleC) == 0)
+		{
+		print  OUTFH  "BinNum\tChr\tStart\tStop\t$sampleA\_rep1\t$sampleA\_rep2\t$sampleA\_rep3\t$sampleB\_rep1\t$sampleB\_rep2\t$sampleB\_rep3\n";
+		print  OUTFH2 "BinNum\tChr\tStart\tStop\t$sampleA\_rep1\t$sampleA\_rep2\t$sampleA\_rep3\t$sampleB\_rep1\t$sampleB\_rep2\t$sampleB\_rep3\n";
+		}
 	
 		print  PARAMETERS "View ID: $viewID\n";
 		print  PARAMETERS "Viewpoint: $view_chr\:$vp_start\-$vp_stop\n";	
@@ -108,8 +119,11 @@ while (my $viewpoint = <VIEWPOINTS>)
 		print  PARAMETERS "Window_Size: $window_size\n";
 		print  PARAMETERS "Sample A: $sampleA\n";
 		print  PARAMETERS "Sample B: $sampleB\n";
-		print  PARAMETERS "Sample B: $sampleC\n";		
 		
+		if (length($sampleC) != 0)
+    {
+		print  PARAMETERS "Sample C: $sampleC\n";		
+	}
 		
 		
 	#	2.1 For plotted region we first need a hash of bins
@@ -138,7 +152,7 @@ while (my $viewpoint = <VIEWPOINTS>)
 	#	2.2 Open the appropriate unionbedgraph should be "Viewpoint.unionbdg"
 	#		- Chr Start Stop SampleA_rep1	SampleA_rep2	SampleA_rep3	SampleB_rep1	SampleB_rep2	SampleB_rep3
 		
-		my $unionbdg = "$viewID\.unionbdg";
+		my $unionbdg = "$viewID\_normalised.unionbdg";
 		open(UNIONBDG, "$unionbdg") or die "Cannot open file $unionbdg\n";	
 		while (my $line = <UNIONBDG>)
 			{
@@ -177,9 +191,13 @@ while (my $viewpoint = <VIEWPOINTS>)
 									 $binHash{$BINnumber}{"$sampleB\_rep1_counts"}+=($normfactor*$sampleB_1);
 									 $binHash{$BINnumber}{"$sampleB\_rep2_counts"}+=($normfactor*$sampleB_2);
 									 $binHash{$BINnumber}{"$sampleB\_rep3_counts"}+=($normfactor*$sampleB_3);
+									 if (length($sampleC) != 0)
+										{
 									 $binHash{$BINnumber}{"$sampleC\_rep1_counts"}+=($normfactor*$sampleC_1);
 									 $binHash{$BINnumber}{"$sampleC\_rep2_counts"}+=($normfactor*$sampleC_2);
 									 $binHash{$BINnumber}{"$sampleC\_rep3_counts"}+=($normfactor*$sampleC_3);
+										}
+									 
 								 }
 							 
 							 # Fragments within bin
@@ -194,9 +212,12 @@ while (my $viewpoint = <VIEWPOINTS>)
 									 $binHash{$BINnumber}{"$sampleB\_rep1_counts"}+=($normfactor*$sampleB_1);
 									 $binHash{$BINnumber}{"$sampleB\_rep2_counts"}+=($normfactor*$sampleB_2);
 									 $binHash{$BINnumber}{"$sampleB\_rep3_counts"}+=($normfactor*$sampleB_3);
+									 if (length($sampleC) != 0)
+										{									 
 									 $binHash{$BINnumber}{"$sampleC\_rep1_counts"}+=($normfactor*$sampleC_1);
 									 $binHash{$BINnumber}{"$sampleC\_rep2_counts"}+=($normfactor*$sampleC_2);
 									 $binHash{$BINnumber}{"$sampleC\_rep3_counts"}+=($normfactor*$sampleC_3);
+										}
 								}
 							 # Fragment starts in bin and goes into next bin	 
 							 if($frag_start>=$work_bin_start && $frag_start<=$work_bin_end && $frag_stop>$work_bin_end)
@@ -210,9 +231,12 @@ while (my $viewpoint = <VIEWPOINTS>)
 									 $binHash{$BINnumber}{"$sampleB\_rep1_counts"}+=($normfactor*$sampleB_1);
 									 $binHash{$BINnumber}{"$sampleB\_rep2_counts"}+=($normfactor*$sampleB_2);
 									 $binHash{$BINnumber}{"$sampleB\_rep3_counts"}+=($normfactor*$sampleB_3);
+									 if (length($sampleC) != 0)
+										{									 
 									 $binHash{$BINnumber}{"$sampleC\_rep1_counts"}+=($normfactor*$sampleC_1);
 									 $binHash{$BINnumber}{"$sampleC\_rep2_counts"}+=($normfactor*$sampleC_2);
 									 $binHash{$BINnumber}{"$sampleC\_rep3_counts"}+=($normfactor*$sampleC_3);
+										}
 								}
 							 #Fragment spans bin	 
 							 if($frag_start<$work_bin_start && $frag_stop>$work_bin_end)
@@ -224,9 +248,12 @@ while (my $viewpoint = <VIEWPOINTS>)
 									 $binHash{$BINnumber}{"$sampleB\_rep1_counts"}+=($sampleB_1);
 									 $binHash{$BINnumber}{"$sampleB\_rep2_counts"}+=($sampleB_2);
 									 $binHash{$BINnumber}{"$sampleB\_rep3_counts"}+=($sampleB_3);
+									 if (length($sampleC) != 0)
+										{									 
 									 $binHash{$BINnumber}{"$sampleC\_rep1_counts"}+=($sampleC_1);
 									 $binHash{$BINnumber}{"$sampleC\_rep2_counts"}+=($sampleC_2);
 									 $binHash{$BINnumber}{"$sampleC\_rep3_counts"}+=($sampleC_3);
+										}
 								}
 							 #print  PARAMETERS "\n";
 							 $work_bin_start=$next_bin_start;
@@ -337,10 +364,17 @@ while (my $viewpoint = <VIEWPOINTS>)
 						my $B_1 = $binHash{$counter}{"$sampleB\_rep1_counts"};
 						my $B_2 = $binHash{$counter}{"$sampleB\_rep2_counts"};
 						my $B_3 = $binHash{$counter}{"$sampleB\_rep3_counts"};
+						if (length($sampleC) != 0)
+							{
 						my $C_1 = $binHash{$counter}{"$sampleC\_rep1_counts"};
 						my $C_2 = $binHash{$counter}{"$sampleC\_rep2_counts"};
 						my $C_3 = $binHash{$counter}{"$sampleC\_rep3_counts"};
 						print OUTFH "$counter\t$chr\t$bin_start\t$bin_stop\t$A_1\t$A_2\t$A_3\t$B_1\t$B_2\t$B_3\t$C_1\t$C_2\t$C_3\n";
+							}
+						if (length($sampleC) == 0)
+							{
+						print OUTFH "$counter\t$chr\t$bin_start\t$bin_stop\t$A_1\t$A_2\t$A_3\t$B_1\t$B_2\t$B_3\n";
+							}
 					}
 			}
 
@@ -380,15 +414,25 @@ while (my $viewpoint = <VIEWPOINTS>)
 								$wB_1 += ($binHash{$n}{"$sampleB\_rep1_counts"}/$bins_contributing);
 								$wB_2 += ($binHash{$n}{"$sampleB\_rep2_counts"}/$bins_contributing);
 								$wB_3 += ($binHash{$n}{"$sampleB\_rep3_counts"}/$bins_contributing);
+								if (length($sampleC) != 0)
+									{								
 								$wC_1 += ($binHash{$n}{"$sampleC\_rep1_counts"}/$bins_contributing);
 								$wC_2 += ($binHash{$n}{"$sampleC\_rep2_counts"}/$bins_contributing);
 								$wC_3 += ($binHash{$n}{"$sampleC\_rep3_counts"}/$bins_contributing);
+									}
 								$n++;
 							}
 						my $chr = $binHash{$current_bin}{"Chr"};						
 						my $start = $binHash{$current_bin}{"Start"};
 						my $stop = $binHash{$current_bin}{"Stop"};
+						if (length($sampleC) != 0)
+							{
 						print OUTFH2 "$current_bin\t$chr\t$start\t$stop\t$wA_1\t$wA_2\t$wA_3\t$wB_1\t$wB_2\t$wB_3\t$wC_1\t$wC_2\t$wC_3\n";
+							}
+						if (length($sampleC) == 0)
+							{
+						print OUTFH2 "$current_bin\t$chr\t$start\t$stop\t$wA_1\t$wA_2\t$wA_3\t$wB_1\t$wB_2\t$wB_3\n";
+							}	
 					}
 				else{}
 		}
