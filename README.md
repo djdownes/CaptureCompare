@@ -10,7 +10,7 @@ CaptureCompare can be run locally or on a queued server.
          
 ## Requirements for input files
          
-1. Input directories from [CCseqBasic](https://github.com/Hughes-Genome-Group/CCseqBasicS) to be in this following structure:
+1. Input directories (three for each samples) from [CCseqBasic](https://github.com/Hughes-Genome-Group/CCseqBasicS) to be in this following structure:
 
          |--Directory
              |--Test_A
@@ -22,7 +22,7 @@ CaptureCompare can be run locally or on a queued server.
   
          Run name must match exactly the directory name it was run in (e.g. "Test_A" above)
   
-2. A parameters file sepcifrying viewpoint name, starts and stops of viewpoint, exclusion and plotting regions, bin size, and window size
+2. A parameters file sepcifrying viewpoint name, starts and stops of viewpoint, exclusion and plotting regions, bin size, and window size.
 
 3.  A run shell specificying the input options. For example see "compare.sh"
 
