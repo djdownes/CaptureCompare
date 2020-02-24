@@ -1,4 +1,4 @@
-# CaptureCompare
+# [CaptureCompare](https://www.biorxiv.org/content/10.1101/2020.02.17.952572v1)
 
 (C) Damien J Downes 14 May 2018: damien.downes@ndcls.ox.ac.uk
 
