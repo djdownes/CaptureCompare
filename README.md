@@ -41,7 +41,7 @@ CaptureCompare can be run locally or on a queued server.
 - **version:** CCanalyzer version (Any with F6_greenGraphs_combined_Test_A_CC4 format)
 - **parameters:** Path to file containing windowing parameters - Viewpoint    Chr Frag_start  Frag_stop Exlusion_Start Exlusion_Stop Plot_Region_Start Plot_Region_Stop Bin_Size Window_size
 - **public:** Destination for an output hub that can be loaded into CaptureSee.
-- **enzyme:** CHoice of enzyme used (dpnII, nalIII, hindIII)
+- **enzyme:** Choice of enzyme used (dpnII, nalIII, hindIII)
 
 ## Outputs
 
