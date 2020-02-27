@@ -57,10 +57,10 @@ rundir=$( pwd )
 echo "Running ${CompareShell} in ${rundir}"
 
 # Print run command
-echo "${CompareShell} --analysis=${analysis} --path=${path} --sample1=${sample1} --sample2=${sample2} --sample3=${sample3} --directories=${sample1Directories},${sample2Directories},${sample3Directories} --name=${name} --genome=${genome} --version=${version} --parameters=${parameters} --annotation=${annotation} --public=${public} --restrictionenzyme={enzyme}" 
+echo "${CompareShell} --analysis=${analysis} --path=${path} --sample1=${sample1} --sample2=${sample2} --sample3=${sample3} --directories=${sample1Directories},${sample2Directories},${sample3Directories} --name=${name} --genome=${genome} --version=${version} --parameters=${parameters} --annotation=${annotation} --public=${public} --restrictionenzyme=${enzyme}" 
 
 # Run the command :
-${CompareShell} --analysis=${analysis} --path=${path} --sample1=${sample1} --sample2=${sample2} --sample3=${sample3} --directories=${sample1Directories},${sample2Directories},${sample3Directories} --name=${name} --genome=${genome} --version=${version} --parameters=${parameters} --annotation=${annotation} --public=${public} --restrictionenzyme={enzyme}
+${CompareShell} --analysis=${analysis} --path=${path} --sample1=${sample1} --sample2=${sample2} --sample3=${sample3} --directories=${sample1Directories},${sample2Directories},${sample3Directories} --name=${name} --genome=${genome} --version=${version} --parameters=${parameters} --annotation=${annotation} --public=${public} --restrictionenzyme=${enzyme}
 
 echo "All done !"
 echo
