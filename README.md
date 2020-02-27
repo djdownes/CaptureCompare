@@ -2,7 +2,7 @@
 
 (C) Damien J Downes 14 May 2018: damien.downes@ndcls.ox.ac.uk
 
-These package of scripts perform analysis on a Capture-C replicates forming an experiment. 
+These package of scripts perform analysis on the replicates of Capture-C that form an experiment. 
 
 The wrapper script enables the comparison of triplicates for two or three samples (cell types, growth conditions, timepoints, genetic models). Analysis includes library quality reporting, normalisation, mean and stdev calculation, sample comparison, DESeq2 analysis, windowing and plotting, data preparation for peak calling with [peaky](https://github.com/cqgd/pky), and file preparation for data exploration with [CaptureSee](https://capturesee.molbiol.ox.ac.uk/).
 
@@ -16,9 +16,12 @@ CaptureCompare can be run locally or on a queued server.
              |--Test_A
              |  `--F6_greenGraphs_combined_Test_A_CCversion
              |     `COMBINED_CCversion_VIEWPOINT.gff
-             `--Test_B
-                `--F6_greenGraphs_combined_Test_B_CCversion
-                   `COMBINED_CCversion_VIEWPOINT.gff      
+             |--Test_B
+             |  `--F6_greenGraphs_combined_Test_B_CCversion
+             |     `COMBINED_CCversion_VIEWPOINT.gff      
+             `--Test_C
+                `--F6_greenGraphs_combined_Test_C_CCversion
+                   `COMBINED_CCversion_VIEWPOINT.gff 
   
          Run name must match exactly the directory name it was run in (e.g. "Test_A" above)
   
