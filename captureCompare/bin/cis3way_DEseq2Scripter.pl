@@ -19,7 +19,7 @@ use Getopt::Long;
 my ($sampleA, $sampleB, $sampleC) = split /\,/, $samples;
 my $current_directory = cwd;
 
-
+my $reporter_count;
 ##### Generate a single file describing samples
 
 my $coldata = "$run_name\_DESeq2.tsv";
@@ -44,7 +44,7 @@ open (VIEWPOINTS, $viewPoints) or die "Cannot open viewpoint list\n";
 while (my $viewpoint = <VIEWPOINTS>)
 	{
 		chomp($viewpoint);
-		my ($viewID, @rest) = split(' ', $viewpoint);
+		my ($viewID,$vp_chr, @rest) = split(' ', $viewpoint);
 
 #### Print R script - this bit needs work.
 	
@@ -93,7 +93,10 @@ while (my $viewpoint = <VIEWPOINTS>)
 					{
 						chomp $raw_counts;
 						my ($chr, $start, $stop, $c1, $c2, $c3, $c4, $c5, $c6, $c7, $c8, $c9) = split(' ', $raw_counts);
-						if ($chr =~ /chrom/){next}
+						if ($chr =~ /chrom/){next;}
+						if ($chr ne $vp_chr){next;}									# Only do DESeq2 analysis on cis interacting fragments.
+						$reporter_count= ($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9);
+                        if ($reporter_count<10) {next;}								# Can adjust this value to increase or decrease the number of fragments tested.
 						print DEINPUT "$chr:$start-$stop\t$c1\t$c2\t$c3\t$c4\t$c5\t$c6\t$c7\t$c8\t$c9\n";
 					}
 			}
@@ -105,7 +108,10 @@ while (my $viewpoint = <VIEWPOINTS>)
 					{
 						chomp $raw_counts;
 						my ($chr, $start, $stop, $c1, $c2, $c3, $c4, $c5, $c6,) = split(' ', $raw_counts);
-						if ($chr =~ /chrom/){next}
+						if ($chr =~ /chrom/){next;}
+						if ($chr ne $vp_chr){next;}
+						$reporter_count= ($c1+$c2+$c3+$c4+$c5+$c6);
+                        if ($reporter_count<10) {next;}
 						print DEINPUT "$chr:$start-$stop\t$c1\t$c2\t$c3\t$c4\t$c5\t$c6\n";
 					}
 			}		

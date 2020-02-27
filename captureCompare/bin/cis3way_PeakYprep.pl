@@ -15,7 +15,8 @@ use Getopt::Long;
 	"samples=s"=> \ my $samples,		  # --samples		  Sample1,Sample2,Sample3
     "name=s"=> \my $run_name,             # --name             Name of the analysis
     "genome=s"=> \ my $genome,	    	  # --genome		  mm9/hg19
-    "REfragments=s"=> \ my $frag_bed,	  # --REfragments	  /path/to/RE/fragment/coordinate/bed/file/eg/mm9_DpnII_Fragments.txt       # List of all RE fragments for genome as chr:start-stop, non-overlapping
+    "REfragments=s"=> \ my $frag_bed,	  # --REfragments	  /path/to/RE/fragment/coordinate/bed/file/eg/mm9_dpnII_Fragments.txt       # List of all RE fragments for genome as chr:start-stop, non-overlapping
+    "enzyme=s"=> \my $enzyme,             # --enzyme            Restriction enzyme
 );
 
 my ($sampleA, $sampleB, $sampleC) = split /\,/, $samples;
@@ -28,7 +29,7 @@ my ($sampleA, $sampleB, $sampleC) = split /\,/, $samples;
 
 open(FRAGIN, "$frag_bed") or die "Can't open $frag_bed";
 
-my $frag_key_out = "$genome\_DpnII_Fragments_key.bed";
+my $frag_key_out = "$genome\_$enzyme\_Fragments_key.bed";
 open(KEYOUT, ">$frag_key_out") or die "Can't open $frag_key_out";
 print KEYOUT "chrom\tchromStart\tchromEnd\tID\n";
 
@@ -74,11 +75,13 @@ print SAMP3OUT "BaitID\tPreyID\tN\n";
 
 my $error = "Unnassigned_viewpoint.tsv";
 open(ERROR, ">$error") or die "Can't open $error";
-print ERROR "Could not identify DpnII fragments for\n";
+print ERROR "Could not identify ${enzyme} fragments for\n";
 print ERROR "Name\tChr\tStart\tStop\n";
 
 ## Process samples
 
+my $adj_start;
+my $adj_stop;
 my $current_frag_ID;
 open(VIEW_P, $vp_file) or die "Can't open $vp_file file";
 while (my $target = <VIEW_P>)
@@ -86,11 +89,19 @@ while (my $target = <VIEW_P>)
         chomp $target;
         my ($viewID, $VP_chr, $VP_start, $VP_stop, @rest) = split(' ', $target);
         my $unionbdg = "$viewID\_raw.unionbdg";
-        my $adj_start = $VP_start + 2;                          ### CCbasic uses ends of RE site eg ("|GATC----GATC|"), whereas peakY uses middle, "GA|TC----GA|TC")
-        my $adj_stop = $VP_stop - 2;       
+        if ($enzyme =~ /dpnII/ or $enzyme =~ /nlaIII/)
+            {
+                $adj_start = $VP_start + 2;                          ### CCbasic uses ends of RE site eg ("|GATC----GATC|"), whereas peakY uses middle, "GA|TC----GA|TC")
+                $adj_stop = $VP_stop - 2;
+            }
+        if ($enzyme =~ /hindIII/)
+            {
+                $adj_start = $VP_start + 3;                          
+                $adj_stop = $VP_stop - 3;
+            }         
         if(exists $FragIDHash{$VP_chr}{$adj_start}{$adj_stop})
             {
-                my $vp_fragID = $FragIDHash{$VP_chr}{$adj_start}{$adj_stop};                            ### Assign baits/vp the DpnII ID; Adjust ends to midpoint of DpnII
+                my $vp_fragID = $FragIDHash{$VP_chr}{$adj_start}{$adj_stop};                            ### Assign baits/vp the RE ID; Adjust ends to midpoint of DpnII
                 print VPKEY "$viewID\t$vp_fragID\n";
                 open(UNBEDGR, $unionbdg) or die "Can't open $unionbdg";
                 while (my $ubg = <UNBEDGR>)

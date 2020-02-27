@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #$ -cwd
 
-### (C) Damien Downes 16th May 2018.
+### (C) Damien Downes 2020.
 ### (C) Jelena Telenius 20th Nov 2018 (portability support)
 
 # If you want more stringency, you can uncomment the below line
@@ -24,7 +24,7 @@
 ##########################################
 
 echo
-echo "This is $0 by Damien Downes (C) 2018"
+echo "This is $0 by Damien Downes (C) 2020"
 echo
 echo "Running in machine "
 hostname
@@ -38,24 +38,7 @@ echo
 ###     Where to fetch things from     ###
 ##########################################
 
-# Assuming the code is self-contained : the scripts will be "under the main script" in an orderly fashion.
-# There are 2 conventions - which one would you prefer ?
 
-# Convention 1 :
-#
-# CaptureCompare
-# |- cis3way.sh 
-# |- bin (containing all scripts)
-# `- config (containing the environment setup like module load subs, as well as genome build files or subroutine instructions to find the genome build files)
-
-# Convention 2 :
-#
-# CaptureCompare
-# |- bin (containing all scripts, and the main script cis3way.sh)
-# `- config (containing the environment setup like module load subs, as well as genome build files or subroutine instructions to find the genome build files)
-
-# "Jelena style" portable config follows Convention 1.
-# Below written according to that.
 
 # Get the place "where we are now" - i.e. where the script cis3way.sh was, when it was called.
 topdir=$( dirname $( which $0 ) )
@@ -70,6 +53,7 @@ topdir=$( dirname $( which $0 ) )
 
 scriptdir="${topdir}/bin"
 confFolder="${topdir}/conf"
+
 
 ##########################################
 ###     Loading the environment        ###
@@ -161,7 +145,7 @@ while true ; do
         --version) version=$2 ; shift 2 ;;
         --parameters) parameters=$2 ; shift 2 ;;
         --annotation) annotation=$2 ; shift 2 ;;
-        --frags) frags=$2 ; shift 2 ;;
+        --frags) CaptureDigestPath=$2 ; shift 2 ;;
         --public) PublicPath=$2 ; shift 2 ;;
         --) shift; break;;
     esac
@@ -199,7 +183,7 @@ echo "CC Version: ${version}"
 echo "RE Enzyme: ${REenzyme}"
 echo "Path to viewpoint parameters file: ${parameters}"
 echo "Path to hub location: ${PublicPath}"
-echo
+echo "Path to RE Fragments: ${CaptureDigestPath}"
 
 ###############################################
 ###     Check that parameters are fine      ###
@@ -249,21 +233,22 @@ setUCSCgenomeSizes
 # Checking if we have existing REdigest file,
 # if not, generating here.
 
+    printThis="Checking if this required fragment file is available: ${CaptureDigestPath}/${genome}_${REenzyme}_Fragments.txt"
+    printToLogFile
 
-peakyREfragBed=""
-if [ -s "${CaptureDigestPath}/${REenzyme}/${genome}.txt" ]
+
+if [ -s "${CaptureDigestPath}/${genome}_${REenzyme}_Fragments.txt" ]
     then
-    peakyREfragBed="${CaptureDigestPath}/${REenzyme}/${genome}.txt"
+    frags="${CaptureDigestPath}/${genome}_${REenzyme}_Fragments.txt"
+    printThis="Fragment file exists, digest not needed."
+    printToLogFile
     else
 
     # Running the digestion ..
-
-    printThis="Running whole genome fasta ${REenzyme} digestion on ${genome}.."
+    printThis="Fragment file doesn't exist, digest required \n Running whole genome fasta ${REenzyme} digestion on ${genome}."
     printToLogFile
 
-    echo
     echo "Run command: perl ${REcutter} ${GenomeFasta}"
-    echo
     
     GenomeFasta=""
     setGenomeFasta
@@ -271,11 +256,15 @@ if [ -s "${CaptureDigestPath}/${REenzyme}/${genome}.txt" ]
 
     perl ${REcutter} "${GenomeFasta}"
 
-    testedFile="genome_${REenzyme}_coordinates.txt"
+    testedFile="genome_${REenzyme}_Fragments.txt"
+
     doTempFileTesting
-    
-    peakyREfragBed="$(pwd)/genome_${REenzyme}_coordinates.txt"
-    
+ 
+    mv ${testedFile} "${genome}_${REenzyme}_Fragments.txt"
+    madefile="${genome}_${REenzyme}_Fragments.txt"
+    frags="$(pwd)/${madefile}"
+    printThis="Generated fragment file: ${frags}"
+    printToLogFile    
     fi
  
 
@@ -532,8 +521,6 @@ printToLogFile
 
     echo "Running plotting script for..."
 
-    # module load R/3.4.1-newgcc
-    # all tools are loaded centralised : via calling the setup in /config/loadNeededTools.sh
     for file in *plotting.R
         do
         viewpoint=$( echo $file | sed 's/_plotting.R//' )
@@ -594,8 +581,7 @@ printThis="Running DEseq2"
 printToLogFile
 
     echo "Running DEseq2 script for..."
-    # module load R/3.2.1
-    # all tools are loaded centralised : via calling the setup in /config/loadNeededTools.sh
+
     for file in *.R
         do
         viewpoint=$( echo $file | sed 's/_DESeq2.R//' )
@@ -673,10 +659,10 @@ mv *.bw 3_tracks/E_pvalues/
 printThis="Preparing raw counts for peakY"
 printToLogFile
 
-echo "Run command: perl ${peakyPrep} --viewpoints ${parameters} --samples ${sample1},${sample2},${sample3} --name ${name} --genome ${genome} --REfragments ${frags}"
+echo "Run command: perl ${peakyPrep} --viewpoints ${parameters} --samples ${sample1},${sample2},${sample3} --name ${name} --genome ${genome} --REfragments ${frags} --enzyme ${REenzyme}"
 echo
 
-perl ${peakyPrep} --viewpoints ${parameters} --samples ${sample1},${sample2},${sample3} --name ${name} --genome ${genome} --REfragments ${frags}
+perl ${peakyPrep} --viewpoints ${parameters} --samples ${sample1},${sample2},${sample3} --name ${name} --genome ${genome} --REfragments ${frags} --enzyme ${REenzyme}
 
 mkdir 2_unionBedgraphs/A_raw_counts
 mv *raw.unionbdg 2_unionBedgraphs/A_raw_counts

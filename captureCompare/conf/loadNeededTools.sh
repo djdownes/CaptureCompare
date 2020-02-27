@@ -57,7 +57,7 @@ module load bedtools/2.25.0
 module load perl/5.18.1
 # Most probably will run with any perl
 
-module load R/3.4.1-newgcc
+module load R/3.5.0-newgcc
 # The beginning of the code runs in R 3.4.1(or newer)
 # The deSeq2 part runs in R 3.2 or older - see below subroutine 'changeRfrom3_4to3_2()' 
 
@@ -85,7 +85,7 @@ echo
 
 export PATH=$PATH:/package/bedtools/2.25.0
 export PATH=$PATH:/package/perl/5.18.1/bin
-export PATH=$PATH:/package/R/3.4.1-newgcc/bin/R
+export PATH=$PATH:/package/R/3.5.0-newgcc/bin/R
 
 # export PATH=$PATH:/package/java/8u121/bin/java
 #
@@ -129,9 +129,9 @@ if [ "${useModuleSystem}" -eq 1 ]; then
 
 module unload R
 
-module load R/3.2
-# The beginning of the code runs in R 3.4.1(or newer)
-# The deSeq2 part runs in R 3.2 or older - loading that here
+module load R/3.2.1
+# The beginning of the code runs in R 3.5.0(or newer)
+# The deSeq2 part runs in R 3.2.1 or older - loading that here
 
 module list
 
@@ -155,7 +155,7 @@ echo $PATH
 else
 
 echo
-echo "WARNING : We will need R 3.2 or older here - probably going to crash in DeSeq2 (edit your config file 'loadNeededTools.sh' to take care of this)"
+echo "WARNING : We will need R 3.2 or older here - probably going to crash in DESeq2 (edit your config file 'loadNeededTools.sh' to take care of this)"
 echo
 
 R --version

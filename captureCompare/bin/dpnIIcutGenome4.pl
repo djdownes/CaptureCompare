@@ -30,7 +30,7 @@ my $file_name=$1;
 my $file_path="";
 if ($file_name =~ /(.*\/)(\V++)/) {$file_path = $1; $file_name = $2};
 
-my $output_filename = "genome_dpnII_coordinates.txt"; 
+my $output_filename = "genome_dpnII_Fragments.txt"; 
 
 unless (open(OUTPUT, ">$output_filename")) {print "Cannot open file $output_filename\n"; exit;}
 

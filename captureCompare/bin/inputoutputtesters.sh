@@ -107,7 +107,7 @@ printToLogFile
 
 testInputDirectories(){
     
-printThis="Checking input folders .."
+printThis="Checking input folders..."
 printToLogFile
 
 # Check that all the dirs exist (no typos in dir name and path, thus)
@@ -121,7 +121,7 @@ TEMPdirs=($( echo "${directories}" | sed 's/,$//' | tr ',' '\n' ))
 for tempdir in "${TEMPdirs[@]}"
 do
 
-printThis="Folder ${tempdir} , ran with CCseqBasic version ${version}"
+printThis="Folder ${tempdir}, ran with CCseqBasic version ${version}"
 printToLogFile
 
 testedFolder="${path}/${tempdir}/F6_greenGraphs_combined_${tempdir}_${version}"
@@ -133,7 +133,7 @@ folderTesting
 
 done
 
-printThis="Input folders fine "
+printThis="Input folders fine."
 printToLogFile
 
 }
