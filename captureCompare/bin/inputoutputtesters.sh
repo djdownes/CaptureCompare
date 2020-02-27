@@ -121,7 +121,7 @@ TEMPdirs=($( echo "${directories}" | sed 's/,$//' | tr ',' '\n' ))
 for tempdir in "${TEMPdirs[@]}"
 do
 
-printThis="Folder ${tempdire} , ran with CCseqBasic version ${version}"
+printThis="Folder ${tempdir} , ran with CCseqBasic version ${version}"
 printToLogFile
 
 testedFolder="${path}/${tempdir}/F6_greenGraphs_combined_${tempdir}_${version}"
