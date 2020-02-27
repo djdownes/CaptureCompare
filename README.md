@@ -86,7 +86,7 @@ These files will be organised in the following structure:
 6. Formatted files for peak calling using peaky
 
 **Public hub**
-The second directory is generated in the location specified by **public**. This should be a external facing server for access by UCSC and CaptureSee. The files containing normalised means, subtractions plots, DESeq2 raw output, DESeq2 adjusted pvalues, and unionbedgraphs of normalised tracks are symbolically linked to the analysis directory. Additional configuration files are generated to allow for immediate loading into the browser of choice.
+The second directory is generated in the location specified by **public**. This should be an external facing server for access by UCSC and CaptureSee. The files containing normalised means, subtractions plots, DESeq2 raw output, DESeq2 adjusted pvalues, and unionbedgraphs of normalised tracks are symbolically linked to the analysis directory. Additional configuration files are generated to allow for immediate loading into the browser of choice.
 
 These files will be organised in the following structure:
 
