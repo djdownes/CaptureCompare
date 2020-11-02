@@ -8,6 +8,10 @@ These package of scripts perform analysis on the replicates of Capture-C that fo
 The wrapper script enables the comparison of triplicates for two or three samples (cell types, growth conditions, timepoints, genetic models). Analysis includes library quality reporting, normalisation, mean and stdev calculation, sample comparison, DESeq2 analysis, windowing and plotting, data preparation for interaction calling with [peaky](https://github.com/cqgd/pky), and file preparation for data exploration with [CaptureSee](https://capturesee.molbiol.ox.ac.uk/).
 
 CaptureCompare can be run locally or on a queued server.
+
+
+[![DOI](https://zenodo.org/badge/134270675.svg)](https://zenodo.org/badge/latestdoi/134270675)
+
          
 ## Requirements for input files
          
